@@ -200,8 +200,6 @@ public class MusicService {
     	    String extension = dotIndex == -1 ? "" :originalFileName.substring(dotIndex);
     	    String baseName = dotIndex == -1 ? originalFileName : originalFileName.substring(0, dotIndex);
     	    
-    	    System.out.println("generateNewFileName:" + originalFileName.toString());
-    	    
     	    return baseName + "_" + uuid + extension;
      } 	 
    
@@ -209,8 +207,6 @@ public class MusicService {
      public void copyImageFile(MultipartFile imageFile, Path filePath) {           
     	 try {
              Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-             System.out.println("File saved to: " + filePath.toString());
-             System.out.println("File exists: " + Files.exists(filePath));
          } catch (IOException e) {
              e.printStackTrace();
          } 

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head>
+		<div th:replace="~{fragment :: meta}"></div>
+		
+		<div th:replace="~{fragment :: styles}"></div>
+		
+		<title>曲詳細</title>
+	</head>
+	<body>
+		<div class="musiccollection-wrapper">
+			<!-- ヘッダー -->
+			<div th:replace="~{fragment :: header}"></div>
+			
+			<main>
+				<div class="container pt-4 pb-5 musiccollection-container">
+					<div class="row justify-content-center">
+						<div class="col-xxl-9 col-xl-10 col-lg-11">
+							<nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+								<ol class="breadcrumb mb-0">
+									<li class="breadcrumb-item"><a th:href="@{/}">ホーム</a></li>
+									<li class="breadcrumb-item"><a th:href="@{/musics}">曲一覧</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">曲詳細</li>
+								</ol>
+							</nav>
+							
+							<h1 class="mb-4 text-center" th:text="${music.getSongTitle()}"></h1>
+							
+							<div th:if="${errorMessage}" class="alert alert-danger">
+								<span th:text="${errorMessage}"></span>
+							</div>
+							
+							<div class="d-flex justify-content-end align-items-end mb-3">                    
+			                   <div class="me-4">
+			                       <a th:href="@{/musics/{musicId}/userMusicEdit(musicId=${music.musicId})}">編集</a>                                    
+			                   </div>
+			                   <div>
+			                       <a href="#" class="musiccollection-link-danger" data-bs-toggle="modal" th:data-bs-target="${'#deleteMusicModal' + music.getMusicId()}">削除</a>                                    
+			                   </div>
+			                 </div>  
+			                 
+                             <!-- 削除用モーダル -->
+                             <div class="modal fade" th:id="${'deleteMusicModal' + music.getMusicId()}" tabindex="-1" th:aria-labelledby="${'deleteMusicModalLabel' + music.getMusicId()}">
+                                <div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" th:id="${'deleteMusicModalLabel' + music.getMusicId()}" th:text="${music.getSongTitle() + 'を削除してもよろしいですか？'}"></h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+										</div>
+										<div class="modal-footer">
+											<form method="post" th:action="@{/musics/__${music.getMusicId()}__/userMusicDelete}">
+												<button type="submit" class="btn musiccollection-btn-danger text-white shadow-sm">削除</button>
+											</form>
+										</div>
+									</div>
+								</div>
+                             </div>
+							
+							<div class="mb-4">
+								<img th:if="${music.getImageName()}" th:src="@{/storage/__${music.getImageName()}__}" class="w-100" alt="曲イメージ画像">
+								<img th:unless="${music.getImageName()}" th:src="@{/images/noImage.png}" class="w-100" alt="NO IMAGE">
+							</div>
+							
+							<div class="container">
+								<div class="row">
+									<div class="col-lg-8 container mb-4">
+										<div class="row pb-2 mb-2 border-bottom">
+											<div class="col-4">
+												<span class="fw-bold">曲名</span>
+											</div>
+											
+											<div class="col">
+												<span th:text="${music.getSongTitle()}"></span>
+											</div>
+										</div>
+													
+										<div class="row pb-2 mb-2 border-bottom">
+											<div class="col-4">
+												<span class="fw-bold">アーティスト</span>
+											</div>
+											
+											<div class="col">
+												<span th:text="${music.getArtist()}"></span>
+											</div>
+										</div>
+										
+										<div class="row pb-2 mb-2 border-bottom">
+		                                     <div class="col-4">
+		                                         <span class="fw-bold">ジャンル</span>
+		                                     </div>
+		             
+		                                     <div class="col">
+		                                         <span th:text="${music.genre.getGenreName()}"></span>
+		                                     </div>
+		                                 </div> 
+		                                 
+		                                 <div class="row pb-2 mb-2 border-bottom">
+		                                     <div class="col-4">
+		                                         <span class="fw-bold">音楽ファイル</span>
+		                                     </div>
+		             
+		                                     <div class="col">
+		                                         <span th:text="${music.getMusicFile()}"></span>
+		                                     </div>
+		                                     <!-- 音楽を再生するためのオーディオタグ -->
+											  <audio id="audioPlayer" th:src="@{/music/__${music.musicFile}__}" controls></audio>	
+		                                 </div>   
+		             
+		                                 <div class="row pb-2 mb-2 border-bottom">
+		                                     <div class="col-4">
+		                                         <span class="fw-bold">説明</span>
+		                                     </div>
+		             
+		                                     <div class="col">
+		                                         <span class="musiccollection-pre-wrap" th:text="${music.getDescription()}"></span>
+		                                     </div>
+		                                 </div>
+		             
+		                                 <div class="row pb-2 mb-2 border-bottom">
+		                                     <div class="col-4">
+		                                         <span class="fw-bold">購入料金</span>
+		                                     </div>
+		             
+		                                     <div class="col">
+		                                         <span th:text="${#numbers.formatInteger(music.getPrice(), 1, 'COMMA') + '円'}"></span>
+		                                     </div>
+		                                 </div> 
+		                                 
+		                                 <div class="row pb-2 mb-2 border-bottom">
+		                                     <div class="col-4">
+		                                         <span class="fw-bold">Eメール</span>
+		                                     </div>
+		             
+		                                     <div class="col">
+		                                         <span th:text="${music.getEmail()}"></span>
+		                                     </div>
+		                                 </div>        
+									</div>
+									
+									<div sec:authorize="isAnonymous()" class="col-lg-4 px-0 ps-lg-4 mb-4">
+										<div class="card">
+											<div class="card-body">
+												<p class="card-text">購入するには<a th:href="@{/login}">ログイン</a>が必要です。</p>
+												<button type="submit" class="btn text-white shadow-sm w-100 musiccollection-btn" disabled>購入する</button>
+											</div>
+										</div>
+									</div>
+									
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</main>
+			
+			<!-- フッター -->
+			<div th:replace="~{fragment :: footer}"></div>
+		</div>
+		
+		<div th:replace="~{fragment :: scripts}"></div>
+	</body>
+</html>

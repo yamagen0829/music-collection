@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+ <html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+     <head>
+         <div th:replace="~{fragment :: meta}"></div>    
+              
+         <div th:replace="~{fragment :: styles}"></div>    
+         
+         <title>曲一覧</title>       
+     </head>
+     <body>
+         <div class="musiccollection-wrapper">
+             <!-- ヘッダー -->
+             <div th:replace="~{fragment :: header}"></div>    
+         
+             
+             <main>
+                 <div class="container pt-4 pb-5 musiccollection-container">
+                     <div class="row justify-content-center">
+                         <div class="col-xxl-9 col-xl-10 col-lg-11">
+                             
+                             <h1 class="mb-4 text-center text-white">曲一覧</h1>   
+                             
+                             <div class="d-flex justify-content-between align-items-end flex-wrap">
+								 <form method="get" th:action="@{/admin/musics}" class="mb-3">
+									 <div class="input-group">
+										 <input type="text" class="form-control" name="songTitle" th:value="${songTitle}" placeholder="曲名">
+										 <input type="text" class="form-control" name="artist" th:value="${artist}" placeholder="アーティスト名">
+										 <button type="submit" class="btn text-white shadow-sm musiccollection-btn">検索</button>
+									 </div>
+								 </form>                                
+                                 <a th:href="@{/admin/musics/musicRegister}" class="btn text-white shadow-sm mb-3 musiccollection-btn">登録</a>
+                             </div> 
+                             
+                             <div th:if="${successMessage}" class="alert alert-info">
+                                 <span th:text="${successMessage}"></span>
+                             </div>                                                         
+                             
+                             <table class="table">
+                                 <thead>
+                                     <tr>
+                                         <th scope="col">Music ID</th>
+                                         <th scope="col">ジャンル</th>
+                                         <th scope="col">曲名</th>
+                                         <th scope="col">アーティスト</th>
+                                         <th></th>
+                                         <th scope="col">音楽ファイル</th>
+                                         <th scope="col">価格</th>
+                                         <th scope="col">Eメール</th>
+                                         <th scope="col"></th>
+                                         <th scope="col"></th>                                        
+                                     </tr>
+                                 </thead>   
+                                 <tbody>                                                     
+                                     <tr th:each="music : ${musicPage}">
+                                         <td th:text="${music.getMusicId()}"></td>
+                                         <td th:text="${music.genre.getGenreName()}"></td>
+                                         <td th:text="${music.getSongTitle()}"></td>
+                                         <td th:text="${music.getArtist()}"></td>
+                                         <td><button onclick="playPause(this)" th:attr="data-audio-src=@{'/music/' + ${music.musicFile}}" class="btn btn-primary mt-2">再生</button></td>
+                                         <td th:text="${music.musicFile}">音楽ファイルのパスがここに表示される</td> 
+                                         <td th:text="${music.getPrice()}"></td>
+                                         <td th:text="${music.getEmail()}"></td>
+                                         <td><a th:href="@{'/admin/musics/' + ${music.getMusicId()}}">詳細</a></td>
+                                         <td><a href="#" class="musiccollection-link-danger" data-bs-toggle="modal" th:data-bs-target="${'#deleteMusicModal' + music.getMusicId()}">削除</a></td>   
+                                         
+                                         <!-- 削除用モーダル -->
+                                         <div class="modal fade" th:id="${'deleteMusicModal' + music.getMusicId()}" tabindex="-1" th:aria-labelledby="${'deleteMusicModalLabel' + music.getMusicId()}">
+                                            <div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" th:id="${'deleteMusicModalLabel' + music.getMusicId()}" th:text="${music.getSongTitle() + 'を削除してもよろしいですか？'}"></h5>
+														<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+													</div>
+													<div class="modal-footer">
+														<form method="post" th:action="@{/admin/musics/__${music.getMusicId()}__/musicDelete}">
+															<button type="submit" class="btn musiccollection-btn-danger text-white shadow-sm">削除</button>
+														</form>
+													</div>
+												</div>
+											</div>
+                                         </div>
+                                         	                                                                              
+                                     </tr>                                      
+                                 </tbody>
+                             </table> 
+                             
+                             <!-- ページネーション -->
+                             <div th:if="${musicPage.getTotalPages() > 1}" class="d-flex justify-content-center">
+                                 <nav aria-label="曲一覧ページ">
+                                     <ul class="pagination">
+                                         <li class="page-item">
+                                             <span th:if="${musicPage.isFirst()}" class="page-link disabled">前</span>
+                                             <a th:unless="${musicPage.isFirst()}" th:href="@{/admin/musics(page = ${musicPage.getNumber() - 1}, songTitle = ${songTitle}, artist = ${artist})}" class="page-link musiccollection-page-link">前</a>
+                                         </li>
+                                         <li th:each="i : ${#numbers.sequence(0, musicPage.getTotalPages() - 1)}" class="page-item">
+                                             <span th:if="${i == musicPage.getNumber()}" class="page-link active musiccollection-active" th:text="${i + 1}"></span>
+                                             <a th:unless="${i == musicPage.getNumber()}" th:href="@{/admin/musics(page = ${i}, songTitle = ${songTitle}, artist = ${artist})}" class="page-link musiccollection-page-link" th:text="${i + 1}"></a>
+                                         </li>
+                                         <li class="page-item">                        
+                                             <span th:if="${musicPage.isLast()}" class="page-link disabled">次</span>
+                                             <a th:unless="${musicPage.isLast()}" th:href="@{/admin/musics(page = ${musicPage.getNumber() + 1}, songTitle = ${songTitle}, artist = ${artist})}" class="page-link musiccollection-page-link">次</a>
+                                         </li>
+                                     </ul>
+                                 </nav> 
+                             </div>
+                                                                             
+                         </div>
+                     </div>
+                 </div>              
+             </main>
+             
+             <!-- フッター -->
+             <div th:replace="~{fragment :: footer}"></div>    
+         
+         </div>    
+         
+         <!-- Bootstrap -->
+         <div th:replace="~{fragment :: scripts}"></div>
+         
+         <!--　music.js -->
+         <script th:src="@{/js/music.js}"></script>    
+     </body>
+ </html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+ <html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+     <head>
+         <div th:replace="~{fragment :: meta}"></div>    
+              
+         <div th:replace="~{fragment :: styles}"></div>    
+         
+         <title>曲詳細</title>       
+     </head>
+     <body>
+         <div class="musiccollection-wrapper">
+             <!-- ヘッダー -->
+              <div th:replace="~{fragment :: header}"></div>    
+         
+             
+             <main>
+                 <div class="container pt-4 pb-5 musicicollection-container">
+                     <div class="row justify-content-center">
+                         <div class="col-xl-5 col-lg-6 col-md-8">
+                             <nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                                 <ol class="breadcrumb mb-0">                        
+                                     <li class="breadcrumb-item"><a th:href="@{/admin/musics}">曲一覧</a></li>
+                                     <li class="breadcrumb-item active" aria-current="page">曲詳細</li>
+                                 </ol>
+                             </nav> 
+                             
+                             <h1 class="mb-4 text-center" th:text="${music.getSongTitle()}"></h1>
+                             
+                             <div class="d-flex justify-content-end align-items-end mb-3">                    
+                                 <div>
+                                     <a th:href="@{/admin/musics/{musicId}/musicEdit(musicId=${music.musicId})}">編集</a>                                    
+                                 </div>
+                             </div>                                                 
+                             
+                             <div class="mb-3">
+                                 <img th:if="${music.getImageName()}" th:src="@{/storage/__${music.getImageName()}__}" class="w-100" alt="曲画像">
+                                 <img th:unless="${music.getImageName()}" th:src="@{/images/noImage.png}" class="w-100" alt="NO IMAGE">
+                             </div>   
+                             
+                             <div class="container mb-4">
+                                 <div class="row pb-2 mb-2 border-bottom">
+                                     <div class="col-4">
+                                         <span class="fw-bold">Music ID</span>          
+                                     </div>                                                  
+             
+                                     <div class="col">
+                                         <span th:text="${music.getMusicId()}"></span>
+                                     </div>
+                                 </div>
+             
+                                 <div class="row pb-2 mb-2 border-bottom">
+                                     <div class="col-4">
+                                         <span class="fw-bold">曲名</span>
+                                     </div>
+             
+                                     <div class="col">
+                                         <span th:text="${music.getSongTitle()}"></span>
+                                     </div>
+                                 </div>                    
+                                 
+                                 <div class="row pb-2 mb-2 border-bottom">
+                                     <div class="col-4">
+                                         <span class="fw-bold">アーティスト名</span>
+                                     </div>
+             
+                                     <div class="col">
+                                         <span th:text="${music.getArtist()}"></span>
+                                     </div>
+                                 </div>  
+                                 
+                                 <div class="row pb-2 mb-2 border-bottom">
+                                     <div class="col-4">
+                                         <span class="fw-bold">ジャンル</span>
+                                     </div>
+             
+                                     <div class="col">
+                                         <span th:text="${music.genre.getGenreName()}"></span>
+                                     </div>
+                                 </div> 
+                                 
+                                 <div class="row pb-2 mb-2 border-bottom">
+                                     <div class="col-4">
+                                         <span class="fw-bold">音楽ファイル</span>
+                                     </div>
+             
+                                     <div class="col">
+                                         <span th:text="${music.getMusicFile()}"></span>
+                                     </div>
+                                     <!-- 音楽を再生するためのオーディオタグ -->
+									  <audio id="audioPlayer" th:src="@{/music/__${music.musicFile}__}" controls></audio>	
+                                 </div>   
+             
+                                 <div class="row pb-2 mb-2 border-bottom">
+                                     <div class="col-4">
+                                         <span class="fw-bold">説明</span>
+                                     </div>
+             
+                                     <div class="col">
+                                         <span class="musiccollection-pre-wrap" th:text="${music.getDescription()}"></span>
+                                     </div>
+                                 </div>
+             
+                                 <div class="row pb-2 mb-2 border-bottom">
+                                     <div class="col-4">
+                                         <span class="fw-bold">購入料金</span>
+                                     </div>
+             
+                                     <div class="col">
+                                         <span th:text="${#numbers.formatInteger(music.getPrice(), 1, 'COMMA') + '円'}"></span>
+                                     </div>
+                                 </div> 
+                                 
+                                 <div class="row pb-2 mb-2 border-bottom">
+                                     <div class="col-4">
+                                         <span class="fw-bold">Eメール</span>
+                                     </div>
+             
+                                     <div class="col">
+                                         <span th:text="${music.getEmail()}"></span>
+                                     </div>
+                                 </div>                                
+                             </div>                                                  
+                 
+                         </div>
+                     </div>
+                 </div>             
+             </main>
+             
+             <!-- フッター -->
+             <div th:replace="~{fragment :: footer}"></div>
+             
+         </div>    
+         
+          <!-- Bootstrap -->
+         <div th:replace="~{fragment :: scripts}"></div>
+         
+         <!--　music.js -->
+         <script th:src="@{/js/music.js}"></script>    
+     </body>
+ </html>

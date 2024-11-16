@@ -1,0 +1,169 @@
+html {
+   font-size: 14px;
+ }
+ 
+ body {
+   font-family: 'Noto Sans JP', sans-serif;
+ }
+ 
+ h1 {
+   font-size: 1.5rem;
+ }
+ 
+ h2 {
+	 font-size: 1.475rem;
+ }
+ 
+ h3 {
+	 font-size: 1.25rem;
+ }
+ 
+ a {
+   color: #5196a6;
+   text-decoration: none !important;
+ }
+ 
+ a:hover {
+     color: #407784;
+ }
+ 
+ footer {
+   width: 100%;
+   height: 60px;
+   position: absolute;
+   bottom: 0;    
+   background-color: #f2f0eb;
+ }
+ 
+ .musiccollection-wrapper {
+   min-height: 100vh;
+   position: relative;
+   padding-bottom: 60px;
+   box-sizing: border-box;
+ }
+ 
+ .musiccollection-navbar {
+   min-height: 60px;
+   background: linear-gradient(90deg,rgb(0,0,0), rgb(0,0,128));
+ }
+ 
+ .musiccollection-logo {
+   height: 60px;  
+ }
+ 
+ .musiccollection-title {
+   position: relative;
+   top: 7px; 
+ }
+ 
+ .musiccollection-btn {
+   background-color: #5196a6 !important;   
+   transition: 0.1s;
+ }
+ 
+ .musiccollection-btn:hover {
+   opacity: 0.8;   
+ }
+ 
+ .musiccollection-page-link {
+   color: #5196a6;
+ }
+ 
+ .musiccollection-page-link:hover {
+   color: #407784;
+ }
+ 
+ .musiccollection-active {
+   background-color: #5196a6 !important;
+   border-color: #5196a6 !important;
+ }
+ 
+ .musiccollection-pre-wrap {
+	 white-space: pre-wrap;
+ }
+ 
+ .musiccollection-link-danger {
+	 color: #f2594b;
+ }
+ 
+ .musiccollection-link-danger:hover {
+	 color: #a63c3c;
+ }
+ 
+ .musiccollection-btn-danger {
+	 background-color: #f2594b !important;
+	 transition: 0.1s;
+ }
+ 
+ .musiccollection-btn-danger:hover {
+	 opacity: 0.8;
+ }
+ 
+ .musiccollection-dropdown-item:active {
+     background-color: #5196a6;	 
+ }
+ 
+ .musiccollection-card-link {
+   transition: 0.3s;
+ }
+ 
+ .musiccollection-card-link:hover {
+   opacity: 0.7;
+ }
+ 
+ .musiccollection-horizontal-card-image {
+   width: 100%;
+   height: 240px;
+   object-fit: cover;
+ }
+ 
+ .musiccollection-sort-box {
+	 width: 150px;
+ }
+ 
+ .musiccollection-vertical-card-image {
+	 width: 100%;
+	 height: 150px;
+	 object-fit: cover;
+ }
+ 
+ .musiccollection-serch-form {
+	 max-width: 300px;
+ }
+ 
+ .carouselImg {
+	 width: 100%;
+	 height: 500px;
+	 object-fit: cover;
+ }
+ 
+ .js-fade {
+	 opacity: 0;
+	 transform: translateY(20px);
+	 transition: 2s, transform 2s;
+ }
+ 
+ .js-fade.scroll {
+	 opacity: 1;
+	 transform: translateY(0);
+ }
+ 
+ #backbtn {
+	 display: none;
+	 position: fixed;
+	 right: 20px;
+	 bottom: 38px;
+	 background-color: black;
+	 color: white;
+	 text-decoration: none;
+	 text-align: center;
+	 padding: 28px 24px;
+	 border-radius: 50%;
+	 font-family: Note sans JP, sans-serif;
+ }
+ 
+ @media screen and (min-width: 1400px) {
+   .musiccollection-container {
+     max-width: 1200px;
+   }
+ }

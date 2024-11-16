@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+ <html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+     <head>
+         <div th:replace="~{fragment :: meta}"></div>    
+              
+         <div th:replace="~{fragment :: styles}"></div>    
+         
+         <title>曲一覧</title>       
+     </head>
+     <body>
+         <div class="musiccollection-wrapper">
+             <!-- ヘッダー -->
+             <div th:replace="~{fragment :: header}"></div>    
+         
+             
+             <main>
+                 <div class="container musiccollection-container pb-5">
+                     <div class="row justify-content-center">
+						  <nav class="my-3" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                             <ol class="breadcrumb mb-0">                        
+                                 <li class="breadcrumb-item"><a th:href="@{/}">ホーム</a></li>
+                                 <li class="breadcrumb-item active" aria-current="page">曲一覧</li>
+                             </ol>
+                         </nav>  
+						 
+						 <div th:if="${successMessage}" class="alert alert-info">
+						      <span th:text="${successMessage}"></span>
+					     </div>
+					     
+                         <div class="col-xl-3 col-lg-4 col-md-12">
+                             <form method="get" th:action="@{/musics}" class="w-100 mb-3">
+								<div class="input-group">
+								    <input type="text" class="form-control" name="songTitle" th:value="${songTitle}" placeholder="曲名">
+									<input type="text" class="form-control" name="artist" th:value="${artist}" placeholder="アーティスト名">
+									<button type="submit" class="btn text-white shadow-sm musiccollection-btn">検索</button>
+								</div>
+							</form>                               
+                                                                                    
+                            <div class="card mb-3">
+								<div class="card-header">
+									ジャンルから探す
+								</div>
+								<div class="card-body">
+									<form method="get" th:action="@{/musics}" class="w-100">
+										<div class="form-group mb-3">
+											<select class="form-control form-select" name="genre">
+												<option value="" hidden>選択してください</option>
+												<option value="HipHop" th:selected="${genre == 'HipHop'}">HipHop</option>
+												<option value="Jazz" th:selected="${genre == 'Jazz'}">Jazz</option>
+												<option value="Pops" th:selected="${genre == 'Pops'}">Pops</option>
+												<option value="Rock" th:selected="${genre == 'Rock'}">Rock</option>
+											</select>
+										</div>
+										<div class="form-group">
+											<button type="submit" class="btn text-white shadow-sm w-100 musiccollection-btn">検索</button>
+										</div>
+									</form>
+								</div>
+							</div> 
+                             
+                            <div class="card mb-3">
+								<div class="card-header">
+									一曲あたりの予算から探す
+								</div>
+								<div class="card-body">
+									<form method="get" th:action="@{/musics}" class="w-100">
+										<div class="form-group mb-3">
+											<select class="form-control form-select" name="price">
+												<option value="" hidden>選択してください</option>
+												<option value="500" th:selected="${price == 500}">500円以内</option>
+												<option value="1000" th:selected="${price == 1000}">1000円以内</option>
+												<option value="1500" th:selected="${price == 1500}">1500円以内</option>
+											</select>
+										</div>
+										<div class="form-group">
+											<button type="submit" class="btn text-white shadow-sm w-100 musiccollection-btn">検索</button>
+										</div>
+									</form> 
+								</div>
+							</div>
+							<a th:href="@{/musics/userMusicRegister}" class="btn text-white shadow-sm mb-3 musiccollection-btn">曲登録</a>
+                         </div>
+                          
+                         <div class="col">
+							 <div class="d-flex justify-content-between flex-wrap">
+								 <p th:if="${musicPage.getTotalPages() > 1}" class="fs-5 mb-3" th:text="${'検索結果：' + musicPage.getTotalElements() + '件' + '（' + (musicPage.getNumber() + 1) + ' / ' + musicPage.getTotalPages() + ' ページ）'}"></p>
+								 <p th:unless="${musicPage.getTotalPages() > 1}" class="fs-5 mb-3" th:text="${'検索結果：' + musicPage.getTotalElements() + '件'}"></p>
+							     
+							     <form method="get" th:action="@{/musics}" class="mb-3 musiccollection-sort-box">
+									 <input th:if="${songTitle}" type="hidden" name="songTitle" th:value="${songTitle}">
+									 <input th:if="${artist}" type="hidden" name="artist" th:value="${artist}">
+									 <input th:if="${genre}" type="hidden" name="genre" th:value="${genre}">
+									 <input th:if="${price}" type="hidden" name="price" th:value="${price}">
+									 <select class="form-select form-select-sm" name="order" onChange="this.form.submit();">
+										 <option value="createdAtDesc" th:selected="${order == 'createdAtDesc' || order == null}">新着順</option>
+										 <option value="priceAsc" th:selected="${order == 'priceAsc'}">料金が安い順</option>
+									 </select>
+								 </form>
+							 </div>
+							 
+							 <div class="mb-3" th:each="music : ${musicPage}">
+								 <a th:href="@{/musics/__${music.getMusicId()}__}" class="link-musiccollection-card-link">
+									 <div class="card h-100">
+										 <div class="row g-0">
+											 <div class="col-md-4">
+												 <img th:if="${music.getImageName}" th:src="@{/storage/__${music.getImageName()}__} + '?t=' + ${#dates.millisecond(#dates.createNow())}" class="card-img-top musiccollection-horizontal-card-image" alt="曲イメージ画像">
+												 <img th:unless="${music.getImageName()}" th:src="@{/images/noImage.png}" class="card-img-top musiccollection-horizontal-card-image" alt="NO IMAGE">
+											 </div>
+											 <div class="col-md-8">
+												 <div class="card-body">
+													 <h3 class="card-title mb-3" th:text="${music.getSongTitle()}"></h3>
+													 
+													 <hr class="mb-3">
+													 
+													 <p class="card-text mb-2">
+														 <span th:text="${music.getDescription()}"></span>
+													 </p>
+													 
+													 <p class="card-text">
+														 <span th:text="${#numbers.formatInteger(music.getPrice(), 1, 'COMMA') + '円'}"></span>
+													 </p>
+													 
+													 <!-- 音楽を再生するためのオーディオタグ -->
+									                  <audio id="audioPlayer" th:src="@{/music/__${music.musicFile}__}" controls></audio>	
+												 </div>
+											 </div>
+										 </div>
+									 </div>
+								 </a>
+							 </div>
+						 
+                             <!-- ページネーション -->
+                             <div th:if="${musicPage.getTotalPages() > 1}" class="d-flex justify-content-center">
+                                 <nav aria-label="曲一覧ページ">
+                                     <ul class="pagination">
+                                         <li class="page-item">
+                                             <span th:if="${musicPage.isFirst()}" class="page-link disabled">前</span>
+                                             <a th:unless="${musicPage.isFirst()}" th:href="@{/musics(page = ${musicPage.getNumber() - 1}, songTitle = ${songTitle}, artist = ${artist}, genre = ${genre}, price = ${price}, order = ${order})}" class="page-link musiccollection-page-link">前</a>
+                                         </li>
+                                         <li th:each="i : ${#numbers.sequence(0, musicPage.getTotalPages() - 1)}" class="page-item">
+                                             <span th:if="${i == musicPage.getNumber()}" class="page-link active musiccollection-active" th:text="${i + 1}"></span>
+                                             <a th:unless="${i == musicPage.getNumber()}" th:href="@{/musics(page = ${i}, songTitle = ${songTitle}, artist = ${artist}, genre = ${genre}, price = ${price}, order = ${order})}" class="page-link musiccollection-page-link" th:text="${i + 1}"></a>
+                                         </li>
+                                         <li class="page-item">                        
+                                             <span th:if="${musicPage.isLast()}" class="page-link disabled">次</span>
+                                             <a th:unless="${musicPage.isLast()}" th:href="@{/musics(page = ${musicPage.getNumber() + 1}, songTitle = ${songTitle}, artist = ${artist}, genre = ${genre}, price = ${price}, order = ${order})}" class="page-link musiccollection-page-link">次</a>
+                                         </li>
+                                     </ul>
+                                 </nav> 
+                             </div>
+                                                                             
+                         </div>
+                     </div>
+                 </div>              
+             </main>
+             
+             <!-- フッター -->
+             <div th:replace="~{fragment :: footer}"></div>    
+         
+         </div>    
+         
+         <!-- Bootstrap -->
+         <div th:replace="~{fragment :: scripts}"></div>
+         
+         <!--　music.js -->
+         <script th:src="@{/js/music.js}"></script>    
+     </body>
+ </html>

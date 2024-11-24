@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -110,6 +112,30 @@ public class MusicService {
     	 music.setEmail(userMusicRegisterForm.getEmail());
     	 
     	 musicRepository.save(music);
+     }
+     
+     //ユーザー情報を取得
+     private String getCurrentUserEmail(Authentication authentication) {
+    	 if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+    		 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    		 return userDetails.getUsername();
+    	 }
+    	 return null;
+     }
+     
+     //管理者権限を持っているかを確認
+     private boolean isAdmin(Authentication authentication) {
+    	 return authentication.getAuthorities().stream()
+    			 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+    	 }
+     
+     //曲の編集が許可されているかどうかを確認
+     public boolean canEditOrDelete(Integer musicId, Authentication authentication) {
+    	 Music music = musicRepository.getReferenceById(musicId);
+    	 String currentUserEmail = getCurrentUserEmail(authentication);
+    	 
+    	 //曲のオーナーか管理者のみが許可されます
+    	 return music.getEmail().equals(currentUserEmail) || isAdmin(authentication);
      }
      
      @Transactional

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -110,10 +111,12 @@ public class MusicController {
     }
     
     @GetMapping("/{musicId}")
-    public String userMusicShow(@PathVariable(name = "musicId") Integer musicId, Model model) {
+    public String userMusicShow(@PathVariable(name = "musicId") Integer musicId, Model model, Authentication authentication) {
     	Music music = musicRepository.getReferenceById(musicId);
+    	boolean canEditOrDelete = musicService.canEditOrDelete(musicId, authentication);
     	
     	model.addAttribute("music", music);
+    	model.addAttribute("canEditOrDelete", canEditOrDelete);
     	
     	return "musics/music_show";
     }

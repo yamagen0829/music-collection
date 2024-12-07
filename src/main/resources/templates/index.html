@@ -62,7 +62,7 @@
 										 <p class="card-text mb-1">
 											 <small class="text-muted" th:text="${newMusic.getArtist()}"></small>
 										 </p>
-<!--										 <button onclick="playPause(this)" th:attr="data-audio-src=@{'/music/' + ${newMusic.musicFile}}" class="btn btn-primary mt-2">再生</button>-->
+										 
 										<audio id="audioPlayer" th:src="@{/music/__${newMusic.musicFile}__}" class="w-100" controls></audio>
 									 </div>
 								 </div>

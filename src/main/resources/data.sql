@@ -28,3 +28,16 @@ INSERT IGNORE INTO users (user_id, user_name, furigana, postal_code, address, ph
 INSERT IGNORE INTO users (user_id, user_name, furigana, postal_code, address, phone_number, user_email, password, role_id, enabled, paid, stripe_customer_id) VALUES (4, '音楽 幸美', 'オンガク サチミ', '342-0006', '埼玉県吉川市南広島X-XX-XX', '090-1234-5678', 'sachimi.ongaku@example.com', 'password', 1, false, false, null);
 INSERT IGNORE INTO users (user_id, user_name, furigana, postal_code, address, phone_number, user_email, password, role_id, enabled, paid, stripe_customer_id) VALUES (5, '音楽 雅', 'オンガク ミヤビ', '527-0209', '滋賀県東近江市佐目町X-XX-XX', '090-1234-5678', 'miyabi.ongaku@example.com', 'password', 1, false, false, null);
 INSERT IGNORE INTO users (user_id, user_name, furigana, postal_code, address, phone_number, user_email, password, role_id, enabled, paid, stripe_customer_id) VALUES (6, 'Negto', 'ネグト', '101-0022', '東京都千代田区神田練塀町300番地', '090-1234-5678', 'negto@example.com', '$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO', 2, true, true, null);
+
+-- reveiwsテーブル
+INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (1, 1, 1, '良かった。', 3, '2024-12-18', '2024-12-19');
+INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (2, 1, 2, 'まあまあ', 2, '2024-12-18', '2024-12-19');
+INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (3, 1, 4, 'とても良かった。', 4, '2024-12-18', '2024-12-19');
+INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (4, 1, 3, '感動したし、とても良かった。', 5, '2024-12-18', '2024-12-19');
+INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (5, 1, 5, 'いまいち', 1, '2024-12-18', '2024-12-19');
+INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (6, 1, 6, 'とても良かった。', 4, '2024-12-18', '2024-12-19');
+INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (7, 1, 3, '感動して、涙がでた。', 5, '2024-12-18', '2024-12-19');
+INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (8, 1, 1, 'いまいち', 2, '2024-12-18', '2024-12-19');
+INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (9, 1, 2, '良かった。', 3, '2024-12-18', '2024-12-19');
+INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (10, 1, 3, 'とても良かった。', 4, '2024-12-18', '2024-12-19');
+INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (11, 1, 4, 'いまいちかな', 1, '2024-12-18', '2024-12-19'); 

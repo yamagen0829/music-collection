@@ -246,4 +246,8 @@ public class MusicService {
              e.printStackTrace();
          }          
      } 
+     
+     public Music findByMusicId(Integer musicId) {
+    	 return musicRepository.findByMusicId(musicId).orElse(null);
+     }
 }

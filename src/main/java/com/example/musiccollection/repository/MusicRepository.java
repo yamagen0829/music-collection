@@ -1,6 +1,7 @@
 package com.example.musiccollection.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,4 +28,6 @@ public interface MusicRepository extends JpaRepository<Music, Integer>{
 	public Page<Music> findAllByOrderByPriceAsc(Pageable pageable);
 	
 	public List<Music> findTop10ByOrderByCreatedAtDesc();
+
+	Optional <Music> findByMusicId(Integer musicId);
 }

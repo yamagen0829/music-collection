@@ -1,5 +1,6 @@
 package com.example.musiccollection.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -21,10 +22,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.musiccollection.entity.Genre;
 import com.example.musiccollection.entity.Music;
+import com.example.musiccollection.entity.Review;
 import com.example.musiccollection.form.UserMusicEditForm;
 import com.example.musiccollection.form.UserMusicRegisterForm;
 import com.example.musiccollection.repository.GenreRepository;
 import com.example.musiccollection.repository.MusicRepository;
+import com.example.musiccollection.repository.ReviewRepository;
 import com.example.musiccollection.service.MusicService;
 
 @Controller
@@ -33,11 +36,13 @@ public class MusicController {
     private final MusicRepository musicRepository;
     private final GenreRepository genreRepository;
     private final MusicService musicService;
+    private final ReviewRepository reviewRepository;
     
-    public MusicController(MusicRepository musicRepository, GenreRepository genreRepository, MusicService musicService) {
+    public MusicController(MusicRepository musicRepository, GenreRepository genreRepository, MusicService musicService, ReviewRepository reviewRepository) {
     	this.musicRepository = musicRepository;
     	this.genreRepository = genreRepository;
     	this.musicService = musicService;
+    	this.reviewRepository = reviewRepository;
     }
     
     @GetMapping
@@ -114,9 +119,11 @@ public class MusicController {
     public String userMusicShow(@PathVariable(name = "musicId") Integer musicId, Model model, Authentication authentication) {
     	Music music = musicRepository.getReferenceById(musicId);
     	boolean canEditOrDelete = musicService.canEditOrDelete(musicId, authentication);
+    	List<Review> reviews = reviewRepository.findTop6ByMusicMusicIdOrderByCreatedAtDesc(musicId);
     	
     	model.addAttribute("music", music);
     	model.addAttribute("canEditOrDelete", canEditOrDelete);
+    	model.addAttribute("reviews", reviews);
     	
     	return "musics/music_show";
     }

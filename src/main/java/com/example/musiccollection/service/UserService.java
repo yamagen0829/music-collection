@@ -57,8 +57,8 @@ public class UserService {
      
      //メールアドレスが登録済みかどうかをチェックする
      public boolean isEmailRegistered(String userEmail) {
-    	 User user = userRepository.findByUserEmail(userEmail);
-    	 return user != null;
+//    	 Optional<User> optionalUser = userRepository.findByUserEmail(userEmail);
+    	 return userRepository.findByUserEmail(userEmail).isPresent();
      }
      
      //パスワードとパスワード（確認用）の入力値が一致するかどうかをチェックする

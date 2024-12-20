@@ -55,4 +55,9 @@ public class Music {
     public String getGenreName() {
     	return genre != null ? genre.getGenreName() : null;
     }
+
+	public Music orElse(Object object) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
 }

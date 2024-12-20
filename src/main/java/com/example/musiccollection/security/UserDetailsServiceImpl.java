@@ -2,6 +2,7 @@ package com.example.musiccollection.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,10 +25,8 @@ public class UserDetailsServiceImpl  implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
 		try {
-			User user = userRepository.findByUserEmail(userEmail);
-			if (user == null) {
-	            throw new UsernameNotFoundException("ユーザーが見つかりませんでした。");
-			}
+			Optional<User> optionalUser = userRepository.findByUserEmail(userEmail);
+	        User user = optionalUser.orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりませんでした。"));
 			String userRoleName = user.getRole().getRoleName();
 			Collection<GrantedAuthority> authorities = new ArrayList<>();
 			authorities.add(new SimpleGrantedAuthority(userRoleName));

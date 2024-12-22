@@ -14,8 +14,8 @@ import com.example.musiccollection.entity.Review;
 public interface ReviewRepository extends JpaRepository<Review, Integer>{
 	List<Review> findTop6ByMusicMusicIdOrderByCreatedAtDesc(@Param("musicId") Integer musicId);
 	
-	@Query(value = "SELECT r.* from Reviews r WHERE r.music_id = :musicId",
-			countQuery = "SELECT count(*) FROM Reviews r WHERE r.music_id = :musicId",
+	@Query(value = "SELECT r.* from reviews r WHERE r.music_id = :musicId",
+			countQuery = "SELECT count(*) FROM reviews r WHERE r.music_id = :musicId",
 			nativeQuery = true)
 	Page<Review> findByMusicId(@Param("musicId") Integer musicId, Pageable pageable);
 	

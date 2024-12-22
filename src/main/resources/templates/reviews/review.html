@@ -26,7 +26,7 @@
                              </nav>                                                           
                                      <!-- レビュー機能 -->   
 	                           <div>
-								   <h1 class="mb-4 text-center" th:text="${music.getSongTitle()} + 'レビュー一覧'"></h1>    
+								   <h1 class="mb-4 text-center" th:text="${music.getSongTitle()} + ' レビュー一覧'"></h1>    
 									    <!-- ログインしているのであれば投稿できるようにする -->
 									    <div class="container">
 										    <div class="row justify-content-center">
@@ -37,12 +37,12 @@
 										    <div class="row justify-content-center">
 										        <div class="col-md-6">
 										            <sec:authorize access="isAuthenticated()">
-										                <div th:if="${isPaidUser}">
+										               <!-- <div th:if="${isPaidUser}"> -->
 										                    <a th:href="@{/reviews/postReviewForm/{musicId}(musicId=${music.musicId}, redirectUrl='/reviews/reviewList/' + ${music.musicId})}" 
 										                       class="btn text-white shadow-sm w-100 musiccollection-btn mb-2">
 										                       レビューを投稿する
 										                    </a>
-										                </div>
+										              <!--  </div> 
 										                <div th:if="${!isPaidUser}">
 										                    <a th:href="@{/user/paid}" 
 										                       class="btn text-white shadow-sm w-100 musiccollection-btn mb-2">
@@ -51,7 +51,7 @@
 										                    <div class="note">(有料会員限定機能です。
 										                        <a th:href="@{/user/paid}">会員登録はこちら</a>)
 										                    </div>
-										                </div>
+										               </div> -->
 										            </sec:authorize>
 										        </div>
 										    </div>
@@ -75,17 +75,17 @@
 									                            </div>
 									                            <div class="review-actions" sec:authorize="isAuthenticated()">
 									                                <div th:if="${#authentication.principal.user.userName == review.user.userName}">
-									                                    <a th:if="${isPaidUser}" 
-									                                       th:href="@{/reviews/editReviewForm/{reviewId}(reviewId=${review.id}, redirectUrl='/reviews/reviewList/' + ${music.musicId})}" class="btn btn-link">編集</a>
-									                                    <a th:if="${!isPaidUser}" 
-									                                       th:href="@{/user/paid}" class="btn btn-link">編集</a>
-									                                    <button th:if="${isPaidUser}" 
-									                                            class="btn btn-link nagoyameshi-link-danger" 
+									                                 <!--   <a th:if="${isPaidUser}" -->
+									                                    <a th:href="@{/reviews/editReviewForm/{reviewId}(reviewId=${review.reviewId}, redirectUrl='/reviews/reviewList/' + ${music.musicId})}" class="btn btn-link">編集</a>
+									                                 <!--   <a th:if="${!isPaidUser}" 
+									                                       th:href="@{/user/paid}" class="btn btn-link">編集</a> -->
+									                                 <!--  <button th:if="${isPaidUser}" -->
+									                                       <button class="btn btn-link musiccollection-link-danger" 
 									                                            data-bs-toggle="modal"
-									                                            th:data-bs-target="${'#deleteReviewModal' + review.musicId}" 
+									                                            th:data-bs-target="${'#deleteReviewModal' + review.reviewId}" 
 									                                            th:data-redirect-url="'/reviews/reviewList/' + ${music.musicId}">削除</button>
-									                                    <button th:if="${!isPaidUser}" 
-									                                            class="btn btn-link nagoyameshi-link-danger" onclick="location.href='/user/paid'">削除</button> 
+									                                 <!--   <button th:if="${!isPaidUser}" 
+									                                            class="btn btn-link nagoyameshi-link-danger" onclick="location.href='/user/paid'">削除</button> -->
 									                                </div>
 									                            </div>
 									                        </div>
@@ -146,6 +146,6 @@
          </div>    
          
          <div th:replace="~{fragment :: scripts}"></div> 
-         <script th:src="@{/js/redirect.js}"></script> 
+        <!-- <script th:src="@{/js/redirect.js}"></script> --> 
    </body>
  </html>

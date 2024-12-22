@@ -165,15 +165,15 @@
 										                       レビューを投稿する
 										                    </a>
 										               <!--</div> 
-										               <div th:if="${!isPaidUser}"> -->
+										               <div th:if="${!isPaidUser}"> 
 										                    <a th:href="@{/user/paid}" 
-										                       class="btn text-white shadow-sm w-100 nagoyameshi-btn mb-2">
+										                       class="btn text-white shadow-sm w-100 musiccollection-btn mb-2">
 										                       レビューを投稿する
 										                    </a>
 										                    <div class="review-note">(有料会員限定機能です。
 										                        <a th:href="@{/user/paid}">会員登録はこちら</a>)
 										                    </div>
-										               <!-- </div> -->
+										               </div> -->
 										            </sec:authorize>
 										        </div>
 										    </div>
@@ -196,20 +196,20 @@
 									                                <p th:text="${review.createdAt}"></p>
 									                                <p th:text="${review.content}"></p>
 									                            </div>
-									                            <!--<div class="review-actions" sec:authorize="isAuthenticated()">
+									                            <div class="review-actions" sec:authorize="isAuthenticated()">
 									                                <div th:if="${#authentication.principal.user.userName == review.user.userName}">
-									                                    <a th:if="${isPaidUser}" 
-									                                       th:href="@{/reviews/editReviewForm/{reviewId}(reviewId=${review.id}, redirectUrl='/musics/' + ${music.id})}" class="btn btn-link">編集</a>
-									                                    <a th:if="${!isPaidUser}" 
-									                                       th:href="@{/user/paid}" class="btn btn-link">編集</a>
-									                                    <button th:if="${isPaidUser}" 
-									                                            class="btn btn-link nagoyameshi-link-danger" 
-									                                            data-bs-toggle="modal" th:data-bs-target="${'#deleteReviewModal' + review.id}"
-									                                            th:data-redirect-url="'/musics/' + ${music.id}">削除</button>
-									                                    <button th:if="${!isPaidUser}" 
-									                                            class="btn btn-link nagoyameshi-link-danger" onclick="location.href='/user/paid'">削除</button> 
+									                                    <!--<a th:if="${isPaidUser}" --> 
+									                                       <a th:href="@{/reviews/editReviewForm/{reviewId}(reviewId=${review.reviewId}, redirectUrl='/musics/' + ${music.musicId})}" class="btn btn-link">編集</a>
+									                                   <!-- <a th:if="${!isPaidUser}" 
+									                                       th:href="@{/user/paid}" class="btn btn-link">編集</a> -->
+									                                 <!--   <button th:if="${isPaidUser}" -->
+									                                        <button class="btn btn-link musiccollection-link-danger" 
+									                                            data-bs-toggle="modal" th:data-bs-target="${'#deleteReviewModal' + review.reviewId}"
+									                                            th:data-redirect-url="'/musics/' + ${music.musicId}">削除</button>
+									                                 <!--  <button th:if="${!isPaidUser}" 
+									                                            class="btn btn-link nagoyameshi-link-danger" onclick="location.href='/user/paid'">削除</button> -->
 									                                </div>
-									                            </div>-->
+									                            </div>
 									                        </div>
 									                    </div>
 									                </div>
@@ -234,7 +234,7 @@
 										            <div class="modal-footer">
 										                <form method="post" th:action="@{/reviews/deleteReview/{reviewId}(reviewId=${review.reviewId})}" th:id="'deleteReviewForm' + ${review.reviewId}">
 										                    <input type="hidden" name="redirectUrl" th:value="'/musics/' + ${music.musicId}"/>
-										                    <button type="submit" class="btn nagoyameshi-btn-danger text-white shadow-sm">削除</button>
+										                    <button type="submit" class="btn musiccollection-btn-danger text-white shadow-sm">削除</button>
 										                </form>
 										            </div>
 										        </div>

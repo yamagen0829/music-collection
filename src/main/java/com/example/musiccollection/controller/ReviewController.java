@@ -165,8 +165,9 @@ public class ReviewController {
     }
 
     @GetMapping("/reviewList/{musicId}")
-    public String reviewList(@PathVariable("musicId") Integer musicId, Model model, @PageableDefault(page = 0, size = 10, sort = "musicId", direction = Direction.DESC) Pageable pageable) {
-        Page<Review> reviewPage = reviewRepository.findByMusicMusicIdOrderByScoreDesc(musicId, pageable);
+    public String reviewList(@PathVariable("musicId") Integer musicId, Model model, @PageableDefault(page = 0, size = 10, sort = "review_id", direction = Direction.DESC) Pageable pageable) {
+//        Page<Review> reviewPage = reviewRepository.findByReviewIdOrderByCreatedAtDesc(reviewId, pageable);
+        Page<Review> reviewPage = reviewRepository.findByMusicId(musicId, pageable);
         Music music = musicService.findByMusicId(musicId);
         
 //        // ログインしているユーザー情報を取得

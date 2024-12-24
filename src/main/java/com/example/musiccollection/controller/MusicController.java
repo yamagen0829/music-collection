@@ -28,6 +28,7 @@ import com.example.musiccollection.form.UserMusicRegisterForm;
 import com.example.musiccollection.repository.GenreRepository;
 import com.example.musiccollection.repository.MusicRepository;
 import com.example.musiccollection.repository.ReviewRepository;
+import com.example.musiccollection.service.FavoriteService;
 import com.example.musiccollection.service.MusicService;
 
 @Controller
@@ -37,12 +38,14 @@ public class MusicController {
     private final GenreRepository genreRepository;
     private final MusicService musicService;
     private final ReviewRepository reviewRepository;
+    private final FavoriteService favoriteService;
     
-    public MusicController(MusicRepository musicRepository, GenreRepository genreRepository, MusicService musicService, ReviewRepository reviewRepository) {
+    public MusicController(MusicRepository musicRepository, GenreRepository genreRepository, MusicService musicService, ReviewRepository reviewRepository, FavoriteService favoriteService) {
     	this.musicRepository = musicRepository;
     	this.genreRepository = genreRepository;
     	this.musicService = musicService;
     	this.reviewRepository = reviewRepository;
+    	this.favoriteService = favoriteService;
     }
     
     @GetMapping
@@ -116,14 +119,17 @@ public class MusicController {
     }
     
     @GetMapping("/{musicId}")
-    public String userMusicShow(@PathVariable(name = "musicId") Integer musicId, Model model, Authentication authentication) {
+    public String userMusicShow(@PathVariable(name = "musicId") Integer musicId, Integer userId, Model model, Authentication authentication) {
     	Music music = musicRepository.getReferenceById(musicId);
     	boolean canEditOrDelete = musicService.canEditOrDelete(musicId, authentication);
     	List<Review> reviews = reviewRepository.findTop6ByMusicMusicIdOrderByCreatedAtDesc(musicId);
     	
+    	boolean isFavorite = favoriteService.isFavorite(userId, musicId);
+    	
     	model.addAttribute("music", music);
     	model.addAttribute("canEditOrDelete", canEditOrDelete);
     	model.addAttribute("reviews", reviews);
+    	model.addAttribute("isFavorite", isFavorite);
     	
     	return "musics/music_show";
     }
@@ -181,4 +187,51 @@ public class MusicController {
     	
     	return "redirect:/musics";
     }
+    
+    @PostMapping("/{musicId}/addFavorite")
+    public String addFavorite(@PathVariable(name = "musicId") Integer musicId, Integer userId, RedirectAttributes redirectAttributes) {
+//    	User currentUser = getCurrentUser();
+//    	
+//    	if (currentUser == null || !Boolean.TRUE.equals(currentUser.getPaid())) {
+//            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
+//        }
+    	
+    	try {    
+	            favoriteService.addFavorite(musicId, userId);//, currentUser.getUserId());
+	            redirectAttributes.addFlashAttribute("message", "お気に入りに追加しました。");
+	        } catch (Exception e) {	
+	        	e.printStackTrace();	
+	        	redirectAttributes.addFlashAttribute("errorMessage", "お気に入りの追加中にエラーが発生しました: " + e.getMessage());	
+	        }
+	
+	        return "redirect:/musics/" + musicId;
+    }
+
+    @PostMapping("/{musicId}/removeFavorite")
+    public String removeFavorite(@PathVariable(name = "musicId") Integer musicId, Integer userId, RedirectAttributes redirectAttributes) {
+//    	User currentUser = getCurrentUser();
+//    	if (currentUser == null || !Boolean.TRUE.equals(currentUser.getPaid())) {
+//            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
+//        }
+//    
+        try {
+            favoriteService.removeFavorite(musicId, userId);//, currentUser.getUserId());
+            redirectAttributes.addFlashAttribute("message", "お気に入りを解除しました。");
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "お気に入りの解除中にエラーが発生しました: " + e.getMessage());
+        }
+
+        return "redirect:/musics/" + musicId;
+    }
+    
+//    private User getCurrentUser() {
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        if (principal instanceof UserDetails) {
+//            String email = ((UserDetails) principal).getUsername();
+//            Optional<User> optionalUser = userRepository.findByEmail(email);
+//            return optionalUser.orElse(null);
+//        }
+//        return null;
+//    }
 }

@@ -19,10 +19,6 @@ public interface ReviewRepository extends JpaRepository<Review, Integer>{
 			nativeQuery = true)
 	Page<Review> findByMusicId(@Param("musicId") Integer musicId, Pageable pageable);
 	
-//	Page<Review> findByReviewIdOrderByCreatedAtDesc(@Param("reviewId") Integer reviewId, Pageable pageable);
-	
 	Optional<Review> findByReviewId(Integer reviewId);
 	
-//	@Query("SELECT AVG(r.score) FROM Review r WHERE r.music.musicId = :musicId");
-
 }

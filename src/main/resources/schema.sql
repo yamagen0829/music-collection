@@ -63,3 +63,13 @@ CREATE TABLE IF NOT EXISTS reviews (
     FOREIGN KEY (music_id) REFERENCES musics (music_id),
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 ); 
+
+CREATE TABLE IF NOT EXISTS favorites (
+    favorite_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    music_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (music_id) REFERENCES musics (music_id),
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
+);

@@ -41,3 +41,16 @@ INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, create
 INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (9, 1, 2, '良かった。', 3, '2024-12-18', '2024-12-19');
 INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (10, 1, 3, 'とても良かった。', 4, '2024-12-18', '2024-12-19');
 INSERT IGNORE INTO reviews (review_id, music_id, user_id, content, score, created_at, updated_at) VALUES (11, 1, 4, 'いまいちかな', 1, '2024-12-18', '2024-12-19'); 
+
+-- favoritesテーブル
+INSERT IGNORE INTO favorites (favorite_id, music_id, user_id) VALUES (1, 1, 1);
+INSERT IGNORE INTO favorites (favorite_id, music_id, user_id) VALUES (2, 2, 1);
+INSERT IGNORE INTO favorites (favorite_id, music_id, user_id) VALUES (3, 3, 1);
+INSERT IGNORE INTO favorites (favorite_id, music_id, user_id) VALUES (4, 4, 1);
+INSERT IGNORE INTO favorites (favorite_id, music_id, user_id) VALUES (5, 5, 1);
+INSERT IGNORE INTO favorites (favorite_id, music_id, user_id) VALUES (6, 6, 1);
+INSERT IGNORE INTO favorites (favorite_id, music_id, user_id) VALUES (7, 7, 1);
+INSERT IGNORE INTO favorites (favorite_id, music_id, user_id) VALUES (8, 8, 1);
+INSERT IGNORE INTO favorites (favorite_id, music_id, user_id) VALUES (9, 9, 1);
+INSERT IGNORE INTO favorites (favorite_id, music_id, user_id) VALUES (10, 10, 1);
+INSERT IGNORE INTO favorites (favorite_id, music_id, user_id) VALUES (11, 11, 1);

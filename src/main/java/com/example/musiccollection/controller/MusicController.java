@@ -203,7 +203,7 @@ public class MusicController {
 //    	if (currentUser == null || !Boolean.TRUE.equals(currentUser.getPaid())) {
 //            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
 //        }
-    	
+
     	try {    
 	            favoriteService.addFavorite(musicId, currentUser.getUserId());
 	            redirectAttributes.addFlashAttribute("message", "お気に入りに追加しました。");

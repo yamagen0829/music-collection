@@ -33,15 +33,15 @@
 							</div>
 							         
                             <!-- お気に入り　-->
-                             <div class="heart-mark">							       
-							    <div th:if="${isFavorite}">
+                             <div class="heart-mark position-relative">							       
+							    <div th:if="${isFavorite}" class="position-absolute top-0 end-0">
 							        <form th:action="@{/musics/{musicId}/removeFavorite(musicId=${music.musicId})}" method="post">
-							            <button type="submit">&#9829;お気に入り解除</button>
+							            <button type="submit" class="text-danger bg-white border border-danger border-5 rounded-pill">&#9829;お気に入り解除</button>
 							        </form>
 							    </div>
-							    <div th:unless="${isFavorite}">
+							    <div th:unless="${isFavorite}" class="position-absolute top-0 end-0">
 							        <form th:action="@{/musics/{musicId}/addFavorite(musicId=${music.musicId})}" method="post">
-							            <button type="submit">&#9825;お気に入り追加</button>
+							            <button type="submit" class="text-danger bg-white border border-danger border-5 rounded-pill">&#9825;お気に入り追加</button>
 							        </form>
 							    </div>
 								<!-- <div th:if="${isFavorite}">

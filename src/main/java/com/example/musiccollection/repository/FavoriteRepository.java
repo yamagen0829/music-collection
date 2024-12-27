@@ -10,9 +10,9 @@ import org.springframework.data.repository.query.Param;
 import com.example.musiccollection.entity.Favorite;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Integer>{
-        Optional<Favorite> findByUser_UserIdAndMusic_MusicId(Integer userId, Integer musicId);
+        Optional<Favorite> findByUserUserIdAndMusicMusicId(Integer userId, Integer musicId);
 	
-	    boolean existsByUser_UserIdAndMusic_MusicId(Integer userId, Integer musicId);
+	    boolean existsByUserUserIdAndMusicMusicId(Integer userId, Integer musicId);
 	
-	    Page<Favorite> findByUser_UserId(@Param("userId") Integer userId, Pageable pageable);
+	    Page<Favorite> findByUserUserId(@Param("userId") Integer userId, Pageable pageable);
 }

@@ -71,5 +71,6 @@ CREATE TABLE IF NOT EXISTS favorites (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (music_id) REFERENCES musics (music_id),
-    FOREIGN KEY (user_id) REFERENCES users (user_id)
+    FOREIGN KEY (user_id) REFERENCES users (user_id),
+    UNIQUE KEY music_idanduser_id (music_id, user_id)
 );

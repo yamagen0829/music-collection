@@ -27,13 +27,21 @@ public class FavoriteService {
     }
     
     public Page<Music> getFavoritesByUserId(Integer userId, Pageable pageable) {
-        // ユーザーのお気に入りの音楽を取得するロジック
-        return favoriteRepository.findByFavoriteByUserId(userId, pageable);
+    	 Page<Favorite> favoritePage = favoriteRepository.findByUser_UserId(userId, pageable);
+    	    return favoritePage.map(Favorite::getMusic);
     }
     
+//    public boolean isFavorite(Integer userId, Integer musicId) {
+//        return favoriteRepository.existsByUser_UserIdAndMusic_MusicId(userId, musicId);
+//    }
+    
+    
     public boolean isFavorite(Integer userId, Integer musicId) {
-        return favoriteRepository.existsByUserIdAndMusicId(userId, musicId);
+        boolean result = favoriteRepository.existsByUser_UserIdAndMusic_MusicId(userId, musicId);
+        System.out.println("Checking if favorite exists for userId=" + userId + ", musicId=" + musicId + ": " + result);
+        return result;
     }
+
     
     @Transactional
     public void addFavorite(Integer musicId, Integer userId) {
@@ -50,7 +58,7 @@ public class FavoriteService {
 
     @Transactional
     public void removeFavorite(Integer musicId, Integer userId) {
-    	 Optional<Favorite> favorite = favoriteRepository.findByUserIdAndMusicId(userId, musicId);
+    	 Optional<Favorite> favorite = favoriteRepository.findByUser_UserIdAndMusic_MusicId(userId, musicId);
          favorite.ifPresent(favoriteRepository::delete);
 
     }

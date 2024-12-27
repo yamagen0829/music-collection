@@ -32,9 +32,19 @@
 							    <p th:text="${errorMessage}"></p>
 							</div>
 							         
-  <!-- お気に入り　-->
-                             <div class="heart-mark">
-								 <div th:if="${isFavorite}">
+                            <!-- お気に入り　-->
+                             <div class="heart-mark">							       
+							    <div th:if="${isFavorite}">
+							        <form th:action="@{/musics/{musicId}/removeFavorite(musicId=${music.musicId})}" method="post">
+							            <button type="submit">&#9829;お気に入り解除</button>
+							        </form>
+							    </div>
+							    <div th:unless="${isFavorite}">
+							        <form th:action="@{/musics/{musicId}/addFavorite(musicId=${music.musicId})}" method="post">
+							            <button type="submit">&#9825;お気に入り追加</button>
+							        </form>
+							    </div>
+								<!-- <div th:if="${isFavorite}">
 							        <form th:if="${isPaidUser}" th:action="@{/musics/{musicId}/removeFavorite(musicId=${music.musicId})}" method="post">
 							            <button type="submit">&#9829;お気に入り解除</button>
 							        </form>
@@ -49,7 +59,7 @@
 							        <form th:if="${!isPaidUser}" th:action="@{/user/paid}" method="get">
 							            <button type="submit">&#9825;お気に入り追加 (有料会員限定)</button>
 							        </form>
-							    </div>
+							    </div>-->
                              </div>			                           
 							
 							<h1 class="mb-4 text-center" th:text="${music.getSongTitle()}"></h1>

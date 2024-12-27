@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,11 +25,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.musiccollection.entity.Genre;
 import com.example.musiccollection.entity.Music;
 import com.example.musiccollection.entity.Review;
+import com.example.musiccollection.entity.User;
 import com.example.musiccollection.form.UserMusicEditForm;
 import com.example.musiccollection.form.UserMusicRegisterForm;
 import com.example.musiccollection.repository.GenreRepository;
 import com.example.musiccollection.repository.MusicRepository;
 import com.example.musiccollection.repository.ReviewRepository;
+import com.example.musiccollection.repository.UserRepository;
 import com.example.musiccollection.service.FavoriteService;
 import com.example.musiccollection.service.MusicService;
 
@@ -39,13 +43,15 @@ public class MusicController {
     private final MusicService musicService;
     private final ReviewRepository reviewRepository;
     private final FavoriteService favoriteService;
+    private final UserRepository userRepository;
     
-    public MusicController(MusicRepository musicRepository, GenreRepository genreRepository, MusicService musicService, ReviewRepository reviewRepository, FavoriteService favoriteService) {
+    public MusicController(MusicRepository musicRepository, GenreRepository genreRepository, MusicService musicService, ReviewRepository reviewRepository, FavoriteService favoriteService, UserRepository userRepository) {
     	this.musicRepository = musicRepository;
     	this.genreRepository = genreRepository;
     	this.musicService = musicService;
     	this.reviewRepository = reviewRepository;
     	this.favoriteService = favoriteService;
+    	this.userRepository = userRepository;
     }
     
     @GetMapping
@@ -124,7 +130,9 @@ public class MusicController {
     	boolean canEditOrDelete = musicService.canEditOrDelete(musicId, authentication);
     	List<Review> reviews = reviewRepository.findTop6ByMusicMusicIdOrderByCreatedAtDesc(musicId);
     	
-    	boolean isFavorite = favoriteService.isFavorite(userId, musicId);
+    	 // ログインしているユーザー情報を取得
+        User currentUser = getCurrentUser();
+        boolean isFavorite = favoriteService.isFavorite(currentUser.getUserId(), musicId);
     	
     	model.addAttribute("music", music);
     	model.addAttribute("canEditOrDelete", canEditOrDelete);
@@ -190,14 +198,14 @@ public class MusicController {
     
     @PostMapping("/{musicId}/addFavorite")
     public String addFavorite(@PathVariable(name = "musicId") Integer musicId, Integer userId, RedirectAttributes redirectAttributes) {
-//    	User currentUser = getCurrentUser();
+    	User currentUser = getCurrentUser();
 //    	
 //    	if (currentUser == null || !Boolean.TRUE.equals(currentUser.getPaid())) {
 //            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
 //        }
     	
     	try {    
-	            favoriteService.addFavorite(musicId, userId);//, currentUser.getUserId());
+	            favoriteService.addFavorite(musicId, currentUser.getUserId());
 	            redirectAttributes.addFlashAttribute("message", "お気に入りに追加しました。");
 	        } catch (Exception e) {	
 	        	e.printStackTrace();	
@@ -209,13 +217,13 @@ public class MusicController {
 
     @PostMapping("/{musicId}/removeFavorite")
     public String removeFavorite(@PathVariable(name = "musicId") Integer musicId, Integer userId, RedirectAttributes redirectAttributes) {
-//    	User currentUser = getCurrentUser();
+    	User currentUser = getCurrentUser();
 //    	if (currentUser == null || !Boolean.TRUE.equals(currentUser.getPaid())) {
 //            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
 //        }
 //    
         try {
-            favoriteService.removeFavorite(musicId, userId);//, currentUser.getUserId());
+            favoriteService.removeFavorite(musicId, currentUser.getUserId());
             redirectAttributes.addFlashAttribute("message", "お気に入りを解除しました。");
         } catch (Exception e) {
             e.printStackTrace();
@@ -225,13 +233,13 @@ public class MusicController {
         return "redirect:/musics/" + musicId;
     }
     
-//    private User getCurrentUser() {
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        if (principal instanceof UserDetails) {
-//            String email = ((UserDetails) principal).getUsername();
-//            Optional<User> optionalUser = userRepository.findByEmail(email);
-//            return optionalUser.orElse(null);
-//        }
-//        return null;
-//    }
+    private User getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String userEmail = ((UserDetails) principal).getUsername();
+            Optional<User> optionalUser = userRepository.findByUserEmail(userEmail);
+            return optionalUser.orElse(null);
+        }
+        return null;
+    }
 }

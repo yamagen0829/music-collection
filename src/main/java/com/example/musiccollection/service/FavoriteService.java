@@ -35,14 +35,6 @@ public class FavoriteService {
         return favoriteRepository.existsByUserUserIdAndMusicMusicId(userId, musicId);
     }
     
-    
-//    public boolean isFavorite(Integer userId, Integer musicId) {
-//        boolean result = favoriteRepository.existsByUser_UserIdAndMusic_MusicId(userId, musicId);
-//        System.out.println("Checking if favorite exists for userId=" + userId + ", musicId=" + musicId + ": " + result);
-//        return result;
-//    }
-
-    
     @Transactional
     public void addFavorite(Integer musicId, Integer userId) {
     	if (!isFavorite(userId, musicId)) {

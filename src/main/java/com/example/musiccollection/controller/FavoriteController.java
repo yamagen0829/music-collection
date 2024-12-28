@@ -44,6 +44,11 @@ public class FavoriteController {
                 redirectAttributes.addFlashAttribute("errorMessage", "ユーザー情報が取得できませんでした。再度ログインしてください。");
                 return "redirect:/login"; // ログインページにリダイレクト
             }
+            
+            boolean isFavorite;
+			if (isFavorite = false) {
+            	redirectAttributes.addFlashAttribute("errorMessage", "お気に入り登録がありませんでした。");
+            }
 
 //            boolean isPaidUser = currentUser.getPaid() != null ? currentUser.getPaid() : false;
 //            if (!isPaidUser) {

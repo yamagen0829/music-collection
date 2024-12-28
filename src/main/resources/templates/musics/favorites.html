@@ -21,7 +21,11 @@
                                  <li class="breadcrumb-item active" aria-current="page">お気に入り一覧</li>
                              </ol>
                          </nav>         
-             
+                             
+                             <!-- お気に入りがない場合のメッセージ表示 -->
+				            <div th:if="${noFavoritesMessage}" class="alert alert-danger" role="alert">
+				                <span th:text="${noFavoritesMessage}"></span>
+				            </div>
                                                                          
                              <div class="mb-3" th:each="music, stat : ${favoritePage}">
                                  <a th:href="@{/musics/__${music.getMusicId()}__}" class="link-dark musiccollection-card-link">

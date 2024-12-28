@@ -44,11 +44,6 @@ public class FavoriteController {
                 redirectAttributes.addFlashAttribute("errorMessage", "ユーザー情報が取得できませんでした。再度ログインしてください。");
                 return "redirect:/login"; // ログインページにリダイレクト
             }
-            
-            boolean isFavorite;
-			if (isFavorite = false) {
-            	redirectAttributes.addFlashAttribute("errorMessage", "お気に入り登録がありませんでした。");
-            }
 
 //            boolean isPaidUser = currentUser.getPaid() != null ? currentUser.getPaid() : false;
 //            if (!isPaidUser) {
@@ -57,6 +52,10 @@ public class FavoriteController {
 //            }
 	            Pageable pageable = PageRequest.of(page, 10); // 1ページあたり10件表示
 	            Page<Music> favoritePage = favoriteService.getFavoritesByUserId(currentUser.getUserId(), pageable); 
+	            
+	            if (favoritePage.isEmpty()) {
+	            	model.addAttribute("noFavoritesMessage", "お気に入り登録がありませんでした。");
+	            }
 	            
 	            model.addAttribute("favoritePage", favoritePage);
 //	            model.addAttribute("isPaidUser", isPaidUser);

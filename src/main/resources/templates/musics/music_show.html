@@ -15,6 +15,26 @@
 			<main>
 				<div class="container pt-4 pb-5 musiccollection-container">
 					<div class="row justify-content-center">
+						 <!-- お気に入り　-->
+                             <div class="heart-mark position-relative">							       
+								<div th:if="${isFavorite}" class="position-absolute top-0 end-0">
+							        <form th:if="${isPaidUser}" th:action="@{/musics/{musicId}/removeFavorite(musicId=${music.musicId})}" method="post">
+							            <button type="submit" class="text-danger bg-white border border-danger border-5 rounded-pill">&#9829;お気に入り解除</button>
+							        </form>
+							        <form th:if="${!isPaidUser}" th:action="@{/user/paid}" method="get">
+							            <button type="submit" class="text-danger bg-white border border-danger border-5 rounded-pill">&#9829;お気に入り解除 (有料会員限定)</button>
+							        </form>
+							    </div>
+							    <div th:unless="${isFavorite}" class="position-absolute top-0 end-0">
+							        <form th:if="${isPaidUser}" th:action="@{/musics/{musicId}/addFavorite(musicId=${music.musicId})}" method="post">
+							            <button type="submit" class="text-danger bg-white border border-danger border-5 rounded-pill">&#9825;お気に入り追加</button>
+							        </form>
+							        <form th:if="${!isPaidUser}" th:action="@{/user/paid}" method="get">
+							            <button type="submit" class="text-danger bg-white border border-danger border-5 rounded-pill">&#9825;お気に入り追加 (有料会員限定)</button>
+							        </form>
+							    </div>
+                             </div>			    
+                             
 						<div class="col-xxl-9 col-xl-10 col-lg-11">
 							<nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
 								<ol class="breadcrumb mb-0">
@@ -31,36 +51,6 @@
 							<div th:if="${errorMessage}">
 							    <p th:text="${errorMessage}"></p>
 							</div>
-							         
-                            <!-- お気に入り　-->
-                             <div class="heart-mark position-relative">							       
-							    <div th:if="${isFavorite}" class="position-absolute top-0 end-0">
-							        <form th:action="@{/musics/{musicId}/removeFavorite(musicId=${music.musicId})}" method="post">
-							            <button type="submit" class="text-danger bg-white border border-danger border-5 rounded-pill">&#9829;お気に入り解除</button>
-							        </form>
-							    </div>
-							    <div th:unless="${isFavorite}" class="position-absolute top-0 end-0">
-							        <form th:action="@{/musics/{musicId}/addFavorite(musicId=${music.musicId})}" method="post">
-							            <button type="submit" class="text-danger bg-white border border-danger border-5 rounded-pill">&#9825;お気に入り追加</button>
-							        </form>
-							    </div>
-								<!-- <div th:if="${isFavorite}">
-							        <form th:if="${isPaidUser}" th:action="@{/musics/{musicId}/removeFavorite(musicId=${music.musicId})}" method="post">
-							            <button type="submit">&#9829;お気に入り解除</button>
-							        </form>
-							        <form th:if="${!isPaidUser}" th:action="@{/user/paid}" method="get">
-							            <button type="submit">&#9829;お気に入り解除 (有料会員限定)</button>
-							        </form>
-							    </div>
-							    <div th:unless="${isFavorite}">
-							        <form th:if="${isPaidUser}" th:action="@{/musics/{musicId}/addFavorite(musicId=${music.musicId})}" method="post">
-							            <button type="submit">&#9825;お気に入り追加</button>
-							        </form>
-							        <form th:if="${!isPaidUser}" th:action="@{/user/paid}" method="get">
-							            <button type="submit">&#9825;お気に入り追加 (有料会員限定)</button>
-							        </form>
-							    </div>-->
-                             </div>			                           
 							
 							<h1 class="mb-4 text-center" th:text="${music.getSongTitle()}"></h1>
 							
@@ -141,7 +131,10 @@
 		                                         <span th:text="${music.getMusicFile()}"></span>
 		                                     </div>
 		                                     <!-- 音楽を再生するためのオーディオタグ -->
-											  <audio id="audioPlayer" th:src="@{/music/__${music.musicFile}__}" controls></audio>	
+		                                     <div>
+											    <audio th:if="${isPaidUser}" th:src="@{/music/__${music.musicFile}__}" controls></audio>	
+											    <audio th:unless="${isPaidUser}" th:src="@{/music/__${music.musicFile}__}" controls ontimeupdate="limitPlayTime(this, 30)"></audio>	
+		                                     </div>
 		                                 </div>   
 		             
 		                                 <div class="row pb-2 mb-2 border-bottom">
@@ -197,12 +190,12 @@
 										   <div class="row justify-content-center">
 										        <div class="col-md-6">
 										            <sec:authorize access="isAuthenticated()">
-										               <!-- <div th:if="${isPaidUser}"> -->
+										               <div th:if="${isPaidUser}">
 										                    <a th:href="@{/reviews/postReviewForm/{musicId}(musicId=${music.musicId}, redirectUrl='/musics/' + ${music.musicId})}" 
 										                       class="btn text-white shadow-sm w-100 musiccollection-btn mb-2">
 										                       レビューを投稿する
 										                    </a>
-										               <!--</div> 
+										               </div> 
 										               <div th:if="${!isPaidUser}"> 
 										                    <a th:href="@{/user/paid}" 
 										                       class="btn text-white shadow-sm w-100 musiccollection-btn mb-2">
@@ -211,7 +204,7 @@
 										                    <div class="review-note">(有料会員限定機能です。
 										                        <a th:href="@{/user/paid}">会員登録はこちら</a>)
 										                    </div>
-										               </div> -->
+										               </div>
 										            </sec:authorize>
 										        </div>
 										    </div>
@@ -236,16 +229,16 @@
 									                            </div>
 									                            <div class="review-actions" sec:authorize="isAuthenticated()">
 									                                <div th:if="${#authentication.principal.user.userName == review.user.userName}">
-									                                    <!--<a th:if="${isPaidUser}" --> 
-									                                       <a th:href="@{/reviews/editReviewForm/{reviewId}(reviewId=${review.reviewId}, redirectUrl='/musics/' + ${music.musicId})}" class="btn btn-link">編集</a>
-									                                   <!-- <a th:if="${!isPaidUser}" 
-									                                       th:href="@{/user/paid}" class="btn btn-link">編集</a> -->
-									                                 <!--   <button th:if="${isPaidUser}" -->
-									                                        <button class="btn btn-link musiccollection-link-danger" 
+									                                    <a th:if="${isPaidUser}" 
+									                                       th:href="@{/reviews/editReviewForm/{reviewId}(reviewId=${review.reviewId}, redirectUrl='/musics/' + ${music.musicId})}" class="btn btn-link">編集</a>
+									                                   <a th:if="${!isPaidUser}" 
+									                                       th:href="@{/user/paid}" class="btn btn-link">編集</a>
+									                                 <button th:if="${isPaidUser}"
+									                                        class="btn btn-link musiccollection-link-danger" 
 									                                            data-bs-toggle="modal" th:data-bs-target="${'#deleteReviewModal' + review.reviewId}"
 									                                            th:data-redirect-url="'/musics/' + ${music.musicId}">削除</button>
-									                                 <!--  <button th:if="${!isPaidUser}" 
-									                                            class="btn btn-link nagoyameshi-link-danger" onclick="location.href='/user/paid'">削除</button> -->
+									                                 <button th:if="${!isPaidUser}" 
+									                                            class="btn btn-link nagoyameshi-link-danger" onclick="location.href='/user/paid'">削除</button>
 									                                </div>
 									                            </div>
 									                        </div>
@@ -291,5 +284,7 @@
 		</div>
 		
 		<div th:replace="~{fragment :: scripts}"></div>
+		<!--　music.js -->
+         <script th:src="@{/js/music.js}"></script>    
 	</body>
 </html>

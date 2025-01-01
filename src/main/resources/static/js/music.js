@@ -20,3 +20,11 @@ function playPause(button) {
 		button.textContent = "再生";
 	}
 }
+
+function limitPlayTime(audio, maxTime) {
+        if (audio.currentTime > maxTime) {
+            audio.pause();
+            audio.currentTime = 0;
+            alert("フルバージョンをお楽しみいただくには、有料会員にご登録ください。");
+        }
+}

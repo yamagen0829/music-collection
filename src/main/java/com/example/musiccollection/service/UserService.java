@@ -1,26 +1,34 @@
 package com.example.musiccollection.service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.musiccollection.UserNotFoundException;
 import com.example.musiccollection.entity.Role;
 import com.example.musiccollection.entity.User;
+import com.example.musiccollection.entity.VerificationToken;
 import com.example.musiccollection.form.SignupForm;
 import com.example.musiccollection.form.UserEditForm;
 import com.example.musiccollection.repository.RoleRepository;
 import com.example.musiccollection.repository.UserRepository;
+import com.example.musiccollection.repository.VerificationTokenRepository;
 
 @Service
 public class UserService {
      private final UserRepository userRepository;
      private final RoleRepository roleRepository;
      private final PasswordEncoder passwordEncoder;
+     private final VerificationTokenRepository verificationTokenRepository;
      
-     public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+     public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, VerificationTokenRepository verificationTokenRepository) {
     	 this.userRepository = userRepository;
     	 this.roleRepository = roleRepository;
     	 this.passwordEncoder = passwordEncoder;
+    	 this.verificationTokenRepository = verificationTokenRepository;
      }
      
      @Transactional
@@ -37,6 +45,7 @@ public class UserService {
     	 user.setPassword(passwordEncoder.encode(signupForm.getPassword()));
     	 user.setRole(role);
          user.setEnabled(false);
+         user.setPaid(false);
          
          return userRepository.save(user);
      }
@@ -57,7 +66,6 @@ public class UserService {
      
      //メールアドレスが登録済みかどうかをチェックする
      public boolean isEmailRegistered(String userEmail) {
-//    	 Optional<User> optionalUser = userRepository.findByUserEmail(userEmail);
     	 return userRepository.findByUserEmail(userEmail).isPresent();
      }
      
@@ -78,4 +86,79 @@ public class UserService {
     	 User currentUser = userRepository.getReferenceById(userEditForm.getUserId());
     	 return !userEditForm.getUserEmail().equals(currentUser.getUserEmail());
      }
+     
+     public User getCurrentUser() {
+         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+         if (authentication == null || !authentication.isAuthenticated()) {
+             return null;
+         }
+
+         Object principal = authentication.getPrincipal();
+         if (principal instanceof UserDetails) {
+             String username = ((UserDetails) principal).getUsername();
+             return userRepository.findByUserEmail(username)
+             		.orElseThrow(() -> new UserNotFoundException("User not found"));
+         } else {
+             return null;
+         }
+     }
+     
+     @Transactional
+     public void upgrade(Integer userId) {
+         User user = userRepository.findByUserId(userId)
+             .orElseThrow(() -> new UserNotFoundException("User not found"));
+         user.setPaid(true);
+         userRepository.save(user);
+     }
+
+     @Transactional
+     public void downgrade(Integer userId) {
+         User user = userRepository.findByUserId(userId)
+             .orElseThrow(() -> new UserNotFoundException("User not found"));
+         user.setPaid(false);
+         userRepository.save(user);
+     }
+
+     @Transactional
+     public void cancel(Integer userId) {
+         User user = userRepository.findByUserId(userId)
+             .orElseThrow(() -> new UserNotFoundException("User not found"));
+      // VerificationTokenの削除
+         VerificationToken token = verificationTokenRepository.findByUser(user);
+         if (token != null) {
+             verificationTokenRepository.delete(token);
+         }
+         
+         userRepository.delete(user);
+     }
+     
+     @Transactional
+     public void upgradeUserToPaid(String userEmail) {
+    	 User user = userRepository.findByUserEmail(userEmail)
+    	            .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userEmail));
+    	     user.setPaid(true);
+    	     userRepository.save(user);
+  }
+
+     @Transactional
+     public void downgradeUserToFree(String userEmail) {
+         User user = userRepository.findByUserEmail(userEmail)
+             .orElseThrow(() -> new UserNotFoundException("User not found"));
+         user.setPaid(false);
+         userRepository.save(user);
+     }
+     
+  // ユーザーをデータベースに保存するメソッド
+     @Transactional
+     public User save(User user) {
+    	 return userRepository.save(user);
+     }
+     
+  // メールでユーザーを探すメソッド
+     @Transactional
+	public User findByUserEmail(String userEmail) {
+    	 User user = userRepository.findByUserEmail(userEmail)
+		           .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userEmail));
+		    return user;
+	}
 }

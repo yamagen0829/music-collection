@@ -38,11 +38,14 @@ public class FavoriteService {
     @Transactional
     public void addFavorite(Integer musicId, Integer userId) {
     	if (!isFavorite(userId, musicId)) {
-            User user = userRepository.findByUserId(userId);
+            Optional<User> optionalUser = userRepository.findByUserId(userId);
+            if (!optionalUser.isPresent()) {
+                throw new RuntimeException("User not found");
+            }
             Music music = musicRepository.findByMusicId(musicId).orElseThrow(() -> new RuntimeException("Music not found"));
 
             Favorite favorite = new Favorite();
-            favorite.setUser(user);
+            favorite.setUser(optionalUser.get());
             favorite.setMusic(music);
             favoriteRepository.save(favorite);
         }

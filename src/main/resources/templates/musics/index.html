@@ -78,7 +78,13 @@
 									</form> 
 								</div>
 							</div>
-							<a th:href="@{/musics/userMusicRegister}" class="btn text-white shadow-sm mb-3 musiccollection-btn">曲登録</a>
+								<div th:if="${isPaidUser}">	 
+								   <a th:href="@{/musics/userMusicRegister}" class="btn text-white shadow-sm mb-5 musiccollection-btn">曲登録</a>
+							    </div>
+								<div th:unless="${isPaidUser}">	 
+									 <a th:href="@{/user/paid}" class="btn text-white shadow-sm mb-5 musiccollection-btn">曲登録(有料会員限定機能です。)</a>
+								</div>
+							
                          </div>
                           
                          <div class="col">
@@ -121,7 +127,10 @@
 													 </p>
 													 
 													 <!-- 音楽を再生するためのオーディオタグ -->
-									                  <audio id="audioPlayer" th:src="@{/music/__${music.musicFile}__}" controls></audio>	
+				                                     <div>
+													    <audio th:if="${isPaidUser}" th:src="@{/music/__${music.musicFile}__}" controls></audio>	
+													    <audio th:unless="${isPaidUser}" th:src="@{/music/__${music.musicFile}__}" controls ontimeupdate="limitPlayTime(this, 30)"></audio>	
+				                                     </div>	
 												 </div>
 											 </div>
 										 </div>

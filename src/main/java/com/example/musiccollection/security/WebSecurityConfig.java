@@ -18,7 +18,8 @@ public class WebSecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 		   .authorizeHttpRequests((requests) -> requests
-				   .requestMatchers("/css/**", "/images/**", "/js/**", "/storage/**", "/music/**", "/", "/signup/**", "/error/**").permitAll() // すべてのユーザーにアクセスを許可するURL
+				   .requestMatchers("/css/**", "/images/**", "/js/**", "/storage/**", "/music/**", "/", "/signup/**", "/error/**", "/stripe/webhook", "/user/billingPortal").permitAll() // すべてのユーザーにアクセスを許可するURL
+				   .requestMatchers("/postReviewForm", "/editReviewForm", "/deleteReview", "/confirm").hasAnyRole("PAID", "ADMIN") // 有料会員のみレビューの投稿・編集・削除,予約を許可
 				   .requestMatchers("/admin/**").hasRole("ADMIN") // 管理者にのみアクセスを許可するURL
 				   .anyRequest().authenticated()                  // 上記以外のURLはログインが必要（会員または管理者のどちらでもOK）
 			)
@@ -32,7 +33,11 @@ public class WebSecurityConfig {
 		   .logout((logout) -> logout
 			       .logoutSuccessUrl("/?loggedOut")         // ログアウト時のリダイレクト先URL
 			       .permitAll()
-			);
+			)
+		
+		   .csrf(csrf -> csrf 
+        		.ignoringRequestMatchers("/stripe/webhook", "/user/checkout", "/api/update-payment-method", "/api/delete-payment-method", "/user/billingPortal")
+        		);
 		
 		return http.build();
 	}

@@ -63,6 +63,7 @@ public class MusicController {
     		            @PageableDefault(page = 0, size = 10, sort = "musicId", direction = Direction.ASC) Pageable pageable,
     		            Model model)
     {
+    	
     	Page<Music> musicPage;
     	
     	 if ((songTitle != null && !songTitle.isEmpty()) || (artist != null && !artist.isEmpty())) {
@@ -114,12 +115,20 @@ public class MusicController {
     		 }
     	 }
     	 
+    	 User currentUser = getCurrentUser();
+         boolean isPaidUser = false;
+         
+         if (currentUser != null) {
+             isPaidUser = currentUser.getPaid() != null? currentUser.getPaid() : false;
+         }
+    	 
     	 model.addAttribute("musicPage", musicPage);
     	 model.addAttribute("songTitle", songTitle);
     	 model.addAttribute("artist", artist);
     	 model.addAttribute("genre", genre);
     	 model.addAttribute("price", price);
     	 model.addAttribute("order", order);
+    	 model.addAttribute("isPaidUser", isPaidUser);
     	 
     	 return "musics/index";
     }
@@ -132,12 +141,19 @@ public class MusicController {
     	
     	 // ログインしているユーザー情報を取得
         User currentUser = getCurrentUser();
-        boolean isFavorite = favoriteService.isFavorite(currentUser.getUserId(), musicId);
+        boolean isFavorite = false;
+        boolean isPaidUser = false;
+        
+        if (currentUser != null) {
+            isFavorite = favoriteService.isFavorite(currentUser.getUserId(), musicId);
+            isPaidUser = currentUser.getPaid() != null? currentUser.getPaid() : false;
+        }
     	
     	model.addAttribute("music", music);
     	model.addAttribute("canEditOrDelete", canEditOrDelete);
     	model.addAttribute("reviews", reviews);
     	model.addAttribute("isFavorite", isFavorite);
+    	model.addAttribute("isPaidUser", isPaidUser);
     	
     	return "musics/music_show";
     }
@@ -199,10 +215,10 @@ public class MusicController {
     @PostMapping("/{musicId}/addFavorite")
     public String addFavorite(@PathVariable(name = "musicId") Integer musicId, Integer userId, RedirectAttributes redirectAttributes) {
     	User currentUser = getCurrentUser();
-//    	
-//    	if (currentUser == null || !Boolean.TRUE.equals(currentUser.getPaid())) {
-//            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
-//        }
+    	
+    	if (currentUser == null || !Boolean.TRUE.equals(currentUser.getPaid())) {
+            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
+        }
 
     	try {    
 	            favoriteService.addFavorite(musicId, currentUser.getUserId());
@@ -218,10 +234,10 @@ public class MusicController {
     @PostMapping("/{musicId}/removeFavorite")
     public String removeFavorite(@PathVariable(name = "musicId") Integer musicId, Integer userId, RedirectAttributes redirectAttributes) {
     	User currentUser = getCurrentUser();
-//    	if (currentUser == null || !Boolean.TRUE.equals(currentUser.getPaid())) {
-//            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
-//        }
-//    
+    	if (currentUser == null || !Boolean.TRUE.equals(currentUser.getPaid())) {
+            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
+        }
+    
         try {
             favoriteService.removeFavorite(musicId, currentUser.getUserId());
             redirectAttributes.addFlashAttribute("message", "お気に入りを解除しました。");

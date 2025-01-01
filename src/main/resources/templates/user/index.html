@@ -31,6 +31,12 @@
 								</div>
 							</div>
 							
+							<div class="d-flex justify-content-end align-items-end mb-3">                    
+                                 <div>
+                                     <a th:href="@{/user/paid}">有料会員登録</a>                        
+                                 </div>
+                             </div> 
+							
 							<div th:if="${successMessage}" class="alert alert-info">
 								<span th:text="${successMessage}"></span>
 							</div>
@@ -95,6 +101,17 @@
 										<span th:text="${user.getUserEmail()}"></span>
 									</div>
 								</div>
+								
+								 <div class="row pb-2 mb-2 border-bottom">
+                                     <div class="col-4">
+                                         <span class="fw-bold">会員状態</span>
+                                     </div>
+             
+                                     <div class="col">
+                                         <span th:if="${user.getPaid()}">有料会員</span>
+                                         <span th:unless="${user.getPaid()}">一般会員</span>
+                                     </div>
+                                 </div>             
 							</div>
 						</div>
 					</div>

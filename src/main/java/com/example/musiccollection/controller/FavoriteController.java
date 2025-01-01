@@ -45,11 +45,11 @@ public class FavoriteController {
                 return "redirect:/login"; // ログインページにリダイレクト
             }
 
-//            boolean isPaidUser = currentUser.getPaid() != null ? currentUser.getPaid() : false;
-//            if (!isPaidUser) {
-//                redirectAttributes.addFlashAttribute("errorMessage", "この機能を利用するには有料会員になる必要があります。");
-//                return "redirect:/user/paid"; // 有料会員ページにリダイレクト
-//            }
+            boolean isPaidUser = currentUser.getPaid() != null ? currentUser.getPaid() : false;
+            if (!isPaidUser) {
+                redirectAttributes.addFlashAttribute("errorMessage", "この機能を利用するには有料会員になる必要があります。");
+                return "redirect:/user/paid"; // 有料会員ページにリダイレクト
+            }
 	            Pageable pageable = PageRequest.of(page, 10); // 1ページあたり10件表示
 	            Page<Music> favoritePage = favoriteService.getFavoritesByUserId(currentUser.getUserId(), pageable); 
 	            
@@ -58,7 +58,7 @@ public class FavoriteController {
 	            }
 	            
 	            model.addAttribute("favoritePage", favoritePage);
-//	            model.addAttribute("isPaidUser", isPaidUser);
+	            model.addAttribute("isPaidUser", isPaidUser);
 	        
         } catch (Exception e) {
     		  // エラーログを出力

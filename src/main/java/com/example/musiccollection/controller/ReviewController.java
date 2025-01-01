@@ -72,8 +72,21 @@ public class ReviewController {
     public String postReviewForm(@PathVariable("musicId") Integer musicId,
     		                     @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
     		                     Model model) {
+    	if (!isPaidUser()) {
+            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
+        }
+    	
+    	 // ログインしているユーザー情報を取得
+        User currentUser = getCurrentUser();
+        boolean isPaidUser = false;
+        
+        if (currentUser != null) {
+            isPaidUser = currentUser.getPaid() != null? currentUser.getPaid() : false;
+        } 
+    	
     	  model.addAttribute("reviewForm", new ReviewForm());
     	  model.addAttribute("music", musicService.findByMusicId(musicId));
+    	  model.addAttribute("isPaidUser", isPaidUser);
     	  
     	  return "reviews/review_post";
     }
@@ -84,9 +97,9 @@ public class ReviewController {
     		                   @ModelAttribute @Valid ReviewForm reviewForm, 
     		                   BindingResult result, 
     		                   Model model) {
-//    	if (!isPaidUser()) {
-//            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
-//        }
+    	if (!isPaidUser()) {
+            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
+        }
     	
     	if (result.hasErrors()) {
             model.addAttribute("music", musicService.findByMusicId(musicId));
@@ -103,9 +116,9 @@ public class ReviewController {
 
     @GetMapping("/editReviewForm/{reviewId}")
     public String editReviewForm(@PathVariable("reviewId") Integer reviewId, Model model) {
-//    	if (!isPaidUser()) {
-//            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
-//        }
+    	if (!isPaidUser()) {
+            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
+        }
     	Review review = reviewRepository.findByReviewId(reviewId).orElseThrow(() -> new IllegalArgumentException("Invalid review Id:" + reviewId));
     	Music music = review.getMusic();
     	
@@ -127,9 +140,9 @@ public class ReviewController {
     		                   @ModelAttribute @Valid ReviewForm reviewForm, 
     		                   BindingResult result, 
     		                   Model model) {
-//    	if (!isPaidUser()) {
-//            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
-//        }
+    	if (!isPaidUser()) {
+            return "redirect:/user/paid"; // 有料会員ページにリダイレクト
+        }
     	
     	if (result.hasErrors()) {
     		Review review = reviewRepository.findByReviewId(reviewId).orElseThrow(() -> new IllegalArgumentException("Invalid review Id:" + reviewId));
@@ -170,17 +183,17 @@ public class ReviewController {
         Page<Review> reviewPage = reviewRepository.findByMusicId(musicId, pageable);
         Music music = musicService.findByMusicId(musicId);
         
-//        // ログインしているユーザー情報を取得
-//        User currentUser = getCurrentUser();
-//        boolean isPaidUser = false;
-//        
-//        if (currentUser != null) {
-//            isPaidUser = currentUser.getPaid() != null? currentUser.getPaid() : false;
-//        }
+        // ログインしているユーザー情報を取得
+        User currentUser = getCurrentUser();
+        boolean isPaidUser = false;
+        
+        if (currentUser != null) {
+            isPaidUser = currentUser.getPaid() != null? currentUser.getPaid() : false;
+        }
 
         model.addAttribute("reviewPage", reviewPage);
         model.addAttribute("music", music);
-//        model.addAttribute("isPaidUser", isPaidUser);
+        model.addAttribute("isPaidUser", isPaidUser);
 
         return "reviews/review";
     }
